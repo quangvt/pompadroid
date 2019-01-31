@@ -21,12 +21,6 @@ USING_NS_CC;
 class GameScene : public Scene
 {
 public:
-// Why adding 2 lines make error when build
-//    GameScene();
-//    ~GameScene();
-    
-//    bool init() override;
-    
     static Scene* createScene();
     
     CC_SYNTHESIZE(GameLayer*, _gameLayer, GameLayer);

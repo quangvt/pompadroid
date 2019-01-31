@@ -113,19 +113,31 @@ BoundingBox ActionSprite::createBoundingBoxWithOrigin(Vec2 origin, Size size)
 
 void ActionSprite::transformBoxes()
 {
-    _hitBox.actual.origin = getPosition() + Vec2(_hitBox.original.origin.x * getScaleX(),
-                                                 _hitBox.original.origin.y * getScaleY());
-    _hitBox.actual.size = Size(_hitBox.original.size.width * getScaleX(),
-                               _hitBox.original.size.height * getScaleY());
-    _attackBox.actual.origin = getPosition() + Vec2(_attackBox.original.origin.x * getScaleX(),
-                                                    _attackBox.original.origin.y * getScaleY());
-    _attackBox.actual.size = Size(_attackBox.original.size.width * getScaleX(),
-                                  _attackBox.original.size.height * getScaleY());
+//    _hitBox.actual.origin = getPosition() + Vec2(_hitBox.original.origin.x * getScaleX(),
+//                                                 _hitBox.original.origin.y * getScaleY());
+//    _hitBox.actual.size = Size(_hitBox.original.size.width * getScaleX(),
+//                               _hitBox.original.size.height * getScaleY());
+//    _attackBox.actual.origin = getPosition() + Vec2(_attackBox.original.origin.x * getScaleX(),
+//                                                    _attackBox.original.origin.y * getScaleY());
+//    _attackBox.actual.size = Size(_attackBox.original.size.width * getScaleX(),
+//                                  _attackBox.original.size.height * getScaleY());
+    if (getScaleX() >= 0)
+    {
+        _hitBox.actual.origin = getPosition() + Vec2(_hitBox.original.origin.x * getScaleX(),
+                                                     _hitBox.original.origin.y);
+        _hitBox.actual.size = Size(_hitBox.original.size.width, _hitBox.original.size.height);
+        _attackBox.actual.origin = getPosition() + Vec2(_attackBox.original.origin.x * getScaleX(), _attackBox.original.origin.y);
+        _attackBox.actual.size = Size(_attackBox.original.size.width, _attackBox.original.size.height);
+    } else {
+        _hitBox.actual.origin = getPosition() + Vec2((_hitBox.original.origin.x + _hitBox.original.size.width) * getScaleX(), _hitBox.original.origin.y);
+        _hitBox.actual.size = Size(_hitBox.original.size.width, _hitBox.original.size.height);
+        _attackBox.actual.origin = getPosition() + Vec2((_attackBox.original.origin.x + _attackBox.original.size.width) * getScaleX(), _attackBox.original.origin.y);
+        _attackBox.actual.size = Size(_attackBox.original.size.width, _attackBox.original.size.height);
+    }
 }
 
 void ActionSprite::setPosition(Vec2 position)
 {
     Sprite::setPosition(position);
-//    this->setDesiredPosition(position);
     this->transformBoxes();
 }

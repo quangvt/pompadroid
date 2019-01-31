@@ -27,8 +27,6 @@ bool GameLayer::init()
     // touch
     auto touchListener = EventListenerTouchAllAtOnce::create();
     touchListener->onTouchesBegan = CC_CALLBACK_2(GameLayer::onTouchesBegan, this);
-//    auto touchListener = EventListenerTouchOneByOne::create();
-//    touchListener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
     // tilemap
@@ -57,7 +55,7 @@ void GameLayer::initHero()
     _hero = Hero::create();
     _actors->addChild(_hero);
     _hero->setPosition(Vec2(_hero->getCenterToSides(), 80)); // 80? free y value
-    _hero->setDesiredPosition(Vec2(_hero->getPosition()));
+    _hero->setDesiredPosition(_hero->getPosition());
     _hero->idle();
 }
 
@@ -76,9 +74,10 @@ void GameLayer::initRobots()
         int minX = visibleSize.width + robot->getCenterToSides();
         int maxX = _map->getMapSize().width * _map->getTileSize().width - robot->getCenterToSides();
         int minY = robot->getCenterToBottom();
-        int maxY = 3 * _map->getTileSize().height + robot->getCenterToBottom();
+        int maxY = 3 * _map->getTileSize().height + robot->getCenterToBottom(); // 4 bottom tiles
+        // TODO: Make clear this code
         // This make size of hitbox is negative => can not collide
-        robot->setScaleX(-1.0);
+//        robot->setScaleX(-1.0);
         float rx = minX + (rand() % 100) * (maxX - minX) / 100;
         float ry = minY + (rand() % 100) * (maxY - minY) / 100;
         robot->setPosition(Vec2(rx, ry));
@@ -94,15 +93,28 @@ void GameLayer::onTouchesBegan(const std::vector<Touch*>& touches, Event *event)
     _hero->attack();
     if(_hero->getActionState() == ACTION_STATE_ATTACK)
     {
+        CCLOG("_hero.actual (%f, %f, %f, %f))", _hero->getAttackBox().actual.origin.x,
+              _hero->getAttackBox().actual.origin.y,
+              _hero->getAttackBox().actual.size.width,
+              _hero->getAttackBox().actual.size.height);
         for (auto robot : *_robots)
         {
             if (robot->getActionState() != ACTION_STATE_KNOCKOUT)
             {
                 // TODO: why 10, 20?
-                if (fabsf(_hero->getPosition().y - robot->getPosition().y) < 10)
+                // x: 29 + 29 + 20 = ToSides of Hero + ToSides of Robot + AttackBox width
+                if (fabsf(_hero->getPosition().y - robot->getPosition().y) < 10 &&
+                    fabsf(_hero->getPosition().x - robot->getPosition().x) < 78)
                 {
+                    CCLOG("robot.actual (%f, %f, %f, %f))", robot->getHitBox().actual.origin.x,
+                          robot->getHitBox().actual.origin.y,
+                          robot->getHitBox().actual.size.width,
+                          robot->getHitBox().actual.size.height);
+                    CCLOG("_hero.position (%f, %f)", _hero->getPosition().x, _hero->getPosition().y);
+                    CCLOG("robot.position(%f, %f)", robot->getPosition().x, robot->getPosition().y);
                     if (_hero->getAttackBox().actual.intersectsRect(robot->getHitBox().actual))
                     {
+                        CCLOG("PUNCH");
                         robot->hurtWithDamage(_hero->getDamage());
                     }
                 }
@@ -161,8 +173,6 @@ void GameLayer::updatePositions()
                    MAX(robot->getCenterToBottom(), robot->getDesiredPosition().y));
         robot->setPosition(Vec2(posX, posY));
     }
-    
-    _hero->setDesiredPosition(Vec2(_hero->getPosition()));
 }
 
 void GameLayer::setViewpointCenter(Vec2 position)
@@ -243,7 +253,8 @@ void GameLayer::updateRobots(float delta)
                     {
                         robot->idle();
                     }
-                } else if (distanceSQ <= visibleSize.width * visibleSize.width)
+                } // end if (distanceSQ <= 50*50)
+                else if (distanceSQ <= visibleSize.width * visibleSize.width)
                 {
                     // 5
                     robot->setNextDecisionTime(time(0) + ((rand() % 5) + 1)/10);
@@ -255,10 +266,10 @@ void GameLayer::updateRobots(float delta)
                     } else {
                         robot->idle();
                     }
-                }
-            }
-        }
-    }
+                } // end else if (distanceSQ <= visibleSize.width * visibleSize.width)
+            } // end if (time(0) > robot->getNextDecisionTime())
+        } // end if(robot->getActionState() != ACTION_STATE_KNOCKOUT)
+    } // end for(auto robot : *_robots)
     
     // end game checker here
     if (alive == 0 && _hUD->getChildByTag(5) == NULL)
@@ -270,13 +281,6 @@ void GameLayer::updateRobots(float delta)
 void GameLayer::endGame()
 {
     Size visibleSize = Director::getInstance()->getVisibleSize();
-//    auto *callbackRestartGame = CallFunc::create(std::bind(&GameLayer::restartGame, this));
-//    MenuItemLabel *replayMenuItem = MenuItemLabel::create(Label::createWithTTF("REPLAY", "fonts/Marker Felt.ttf", 30.0f), callbackRestartGame, NULL);
-//    Menu *menu = Menu::create(replayMenuItem, NULL);
-//    menu->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
-//    menu->setTag(5);
-//    _hUD->addChild(menu, 5);
-    
     auto replayLabel = Label::createWithTTF("REPLAY", "fonts/Marker Felt.ttf", 30.0f);
     auto replayMenuItem =  MenuItemLabel::create(replayLabel);
     replayMenuItem->setCallback(CC_CALLBACK_0(GameLayer::restartGame, this));

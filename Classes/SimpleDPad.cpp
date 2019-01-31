@@ -32,13 +32,6 @@ bool SimpleDPad::initWithFile(const std::string& filename, float radius)
     touchListener->onTouchEnded = CC_CALLBACK_2(SimpleDPad::onTouchEnded, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     
-//    auto touchListener = EventListenerTouchAllAtOnce::create();
-////    touchListener->setSwallowTouches(true);
-//    touchListener->onTouchesBegan = CC_CALLBACK_2(SimpleDPad::onTouchesBegan, this);
-//    touchListener->onTouchesMoved = CC_CALLBACK_2(SimpleDPad::onTouchesMoved, this);
-//    touchListener->onTouchesEnded = CC_CALLBACK_2(SimpleDPad::onTouchesEnded, this);
-//    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-    
     _radius = radius;
     _direction = Point::ZERO;
     _isHeld = false;
@@ -114,7 +107,8 @@ void SimpleDPad::updateDirectionForTouchLocation(Vec2 location)
 {
 //    CCLOG("SimpleDPad::updateDirectionForTouchLocation");
 //    float radians = ccpToAngle(location - getPosition());
-    float radians = location.getAngle(getPosition());
+    float radians = (location - getPosition()).getAngle();
+    
     float degrees = -1 * CC_RADIANS_TO_DEGREES(radians);
 
     if (degrees <= 22.5 && degrees >= -22.5) {
@@ -152,15 +146,3 @@ void SimpleDPad::update(float delta)
         _delegator->isHoldingDirection(this, _direction);
     }
 }
-
-//void SimpleDPad::onEnterTransitionDidFinish()
-//{
-////    CCLOG("SimpleDPad::onEnterTransitionDidFinish");
-////    [[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:self priority:1 swallowsTouches:YES];
-//}
-//
-//void SimpleDPad::onExit()
-//{
-////    CCLOG("SimpleDPad::onExit");
-////    [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:self];
-//}

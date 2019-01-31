@@ -47,24 +47,7 @@ bool Hero::init()
     return true;
 }
 
-/**
- *
- */
-Vector<SpriteFrame *> Hero::getAnimation(const char *format, int count, SpriteFrameCache* spritecache)
-{
-    Vector<SpriteFrame *> animFrames;
-    char str[100];
-    for(int i = 0; i < count; i++)
-    {
-        sprintf(str, format, i);
-        animFrames.pushBack(spritecache->getSpriteFrameByName(str));
-    }
-    return animFrames;
-}
-
 void Hero::knockout() {
-//    [super knockout];
-//    [[SimpleAudioEngine sharedEngine] playEffect:@"pd_herodeath.caf"];
     ActionSprite::knockout();
     CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sounds/pd_herodeath.caf");
 }

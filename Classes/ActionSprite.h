@@ -66,6 +66,12 @@ public:
     void walkWithDirection(Vec2 direction);
 
     // scheduled methods
+    /**
+     * Update the desired position.
+     *
+     * GameLayer has responsibility to move Sprite.
+     * ActionSprite itself only updates the desired position.
+     */
     void update(float delta);
     
     // collision box factory method

@@ -48,7 +48,8 @@ class GameLayer : public cocos2d::Layer, public SimpleDPadDelegate
     void initRobots();
     
     /**
-     * Update Hero's position
+     * Update Hero's position by the desired position (Moving sprite)
+     *
      * X = MIN( MapSizeWithInPixel - Hero's CenterToSides,          // Right Edge
      *          MAX(Hero's CenterToSides, Hero's DesiredPosition X))    // Left Edge & Middle
      *
@@ -96,7 +97,6 @@ public:
     
     // Touch
     void onTouchesBegan(const std::vector<Touch*>& touches, Event *event) override;
-//    bool onTouchBegan(const Touch* touches, Event *event) override;
     
     // Properties
     CC_SYNTHESIZE(HudLayer*, _hUD, HUD);
