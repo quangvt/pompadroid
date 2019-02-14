@@ -111,3 +111,6 @@ proj.win32/Debug.*/
 proj.win32/Release.*/
 
 # others
+
+# error cannot apply general rule above
+proj.ios_mac/pompadroid.xcodeproj/project.xcworkspace/xcuserdata/quangvu.xcuserdatad/UserInterfaceState.xcuserstate
