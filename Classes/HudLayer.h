@@ -22,6 +22,7 @@ public:
     CREATE_FUNC(HudLayer);
     
     CC_SYNTHESIZE(SimpleDPad*, _dPad, DPad);
+    CC_SYNTHESIZE(SimpleDPad*, _rdPad, RdPad);
 };
 
 #endif /* HudLayer_h */

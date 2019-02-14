@@ -20,7 +20,8 @@ SimpleDPad* SimpleDPad::dPadWithFile(const std::string& filename, float radius)
 
 bool SimpleDPad::initWithFile(const std::string& filename, float radius)
 {
-    if(!Sprite::initWithFile(filename))
+    //if(!Sprite::initWithFile(filename))
+    if(!Sprite::initWithFile(filename, Rect(0.0, 0.0, radius*2, radius*2)))
     {
         return false;
     }
